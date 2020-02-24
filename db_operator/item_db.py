@@ -17,20 +17,25 @@ class ItemDb(object):
         # db_operator是pymysql库中pymysql.connect()的返回对象
         self.db_operator = self.db_load.get_DB_operator()
         # db_cur与pymysql库中cursor用法完全一致
-        self.db_cur = self.db_load.get_DB_operator()
+        self.db_cur = self.db_load.get_DB_cur()
         self.table_items = 'items'
-        self.close = self.db_load.close()
 
     def item_search_exact(self, item_name: str):
         """
         搜索数据库某个物品所属垃圾类别
         :param item_name: 物品名称
-        :return: 返回一个字典，包含该垃圾ID以及所属所有类别{'ID':1,'class_1':true/false,'class_2':true/false}
+        :return: 返回一个字典，包含该垃圾ID以及所属所有类别{'ID':1,'Name':xxx,'C1':1/2/3/4,}
         """
         result = {}
-        """
-        code
-        """
+        sql = 'SELECT * FROM items WHERE Name = '+'"'+item_name+'"'
+        self.db_cur.execute(sql)
+        search_results = self.db_cur.fetchall()
+        if len(search_results) != 0:
+            result['ID'] = search_results[0][0]
+            result['Name'] = search_results[0][1]
+            result['ClassID'] = int(search_results[0][2])
+
+
         return result
 
     def items_search_vague(self, item_key: str):
@@ -72,7 +77,7 @@ class ItemDb(object):
         编辑某个物品信息
         此函数不面向客户使用，用于后台数据管理
         :param ID: 物品ID
-        :return:字典修改后的信息{'ID':1,'class_1':true/false,'class_2':true/false}
+        :return:字典修改后的信息{'ID':1,'Name':xxx,'C1':true/false,'C2':true/false,'C3':true/false,'C4':true/false}
         """
         pass
 
@@ -81,7 +86,7 @@ class ItemDb(object):
         用于删除某一个物品条目
         此函数不面向客户使用，用于后台数据管理
         :param ID: 要删除的物品ID
-        :return: 字典，被删除的物品信息{'ID':1,'class_1':true/false,'class_2':true/false}
+        :return: 字典，被删除的物品信息{'ID':1,'Name':xxx,'C1':true/false,'C2':true/false,'C3':true/false,'C4':true/false}
         """
         pass
 
