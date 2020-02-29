@@ -20,49 +20,83 @@ class ItemDb(object):
         self.db_cur = self.db_load.get_DB_cur()
         self.table_items = 'items'
 
-    def item_search_exact(self, item_name: str):
+    def item_search_exact_ID(self, item_ID):
         """
-        搜索数据库某个物品所属垃圾类别
-        :param item_name: 物品名称
-        :return: 返回一个字典，包含该垃圾ID以及所属所有类别{'ID':1,'Name':xxx,'C1':1/2/3/4,}
+        通过ID准确搜索
+        :param item_ID: 物品ID
+        :return: 返回一个字典，包含该垃圾ID以及所属所有类别{'ID':1,'Name':xxx,'ClassID':1/2/3/4,}
         """
         result = {}
-        sql = 'SELECT * FROM items WHERE Name = '+'"'+item_name+'"'
+        sql = 'SELECT * FROM items WHERE ID = ' + item_ID
         self.db_cur.execute(sql)
         search_results = self.db_cur.fetchall()
         if len(search_results) != 0:
             result['ID'] = search_results[0][0]
             result['Name'] = search_results[0][1]
             result['ClassID'] = int(search_results[0][2])
+        else:
+            return {'ID': -1, 'Name': "NOT EXIST", 'ClassID': -1, }
+        return result
 
-
+    def item_search_exact(self, item_name: str):
+        """
+        搜索数据库某个物品所属垃圾类别
+        :param item_name: 物品名称
+        :return: 返回一个字典，包含该垃圾ID以及所属所有类别{'ID':1,'Name':xxx,'ClassID':1/2/3/4,}
+        """
+        result = {}
+        sql = 'SELECT * FROM items WHERE Name = ' + '"' + item_name + '"'
+        self.db_cur.execute(sql)
+        search_results = self.db_cur.fetchall()
+        if len(search_results) != 0:
+            result['ID'] = search_results[0][0]
+            result['Name'] = search_results[0][1]
+            result['ClassID'] = int(search_results[0][2])
+        else:
+            return {'ID': -1, 'Name': "NOT EXIST", 'ClassID': -1, }
         return result
 
     def items_search_vague(self, item_key: str):
         """
-        搜索含有指定关键字条目(为减小数据量，只返回ID，与物品名)
+        搜索含有指定关键字条目
         :param item_key: 该批物品的共同含有的字符（鸡蛋，鸡蛋壳，鸡蛋黄，鸡蛋清）
-        :return: 所有符合搜索条件的物品条目格式{'item_ID':item_name,'item_ID2':item_name2...}
+        :return: 所有符合搜索条件的物品条目格式{'item_ID':{"item_name":"xxx","CLASSID":1/2/3/4},....}
         """
         result = {}
-        """
-        code
-        """
+        sql = 'SELECT * FROM items WHERE Name LIKE "%' + item_key + '%"'
+        self.db_cur.execute(sql)
+        search_result = self.db_cur.fetchall()
+        if len(search_result) != 0:
+            result['items_num'] = len(search_result)
+            for item in search_result:
+                result[str(item[0])] = {"Name": item[1], 'CLassID': item[2]}
+        else:
+            return {'item_num': 0}
         return result
 
-    def items_read_all(self):
+    def items_read_all(self, ClassID: int = 0):
         """
-        此函数不面向客户使用，用于后台数据管理
         一次性读取数据库所有内容(为减小数据量，只返回ID，与物品名)
-        :return: 字典形式，格式为{'item_ID':item_name,'item_ID2':item_name2...}
+        :param ClassID: 需要获取的物品类别默认为0所有
+        :return: 字典形式，格式为{'item_ID':{"item_name":"xxx","CLASSID":1/2/3/4},....}
         """
         result = {}
-        """
-        code
-        """
+        sql = ''
+        if ClassID == 0:
+            sql = 'SELECT * FROM items'
+        else:
+            sql = 'SELECT * FROM items where ClassID_1 = "' + str(ClassID) + '"'
+        self.db_cur.execute(sql)
+        search_result = self.db_cur.fetchall()
+        if len(search_result) != 0:
+            result['items_num'] = len(search_result)
+            for item in search_result:
+                result[str(item[0])] = {"Name": item[1], 'CLassID': item[2]}
+        else:
+            return {'item_num': 0}
         return result
 
-    def items_add(self, item_name:str, item_Class: dir()):
+    def items_add(self, item_name: str, item_Class: dir()):
         """
         向数据库添加物品条目
         此函数不面向客户使用，用于后台数据管理
@@ -98,3 +132,6 @@ class ItemDb(object):
         :return: 无
         """
         pass
+
+    def close(self):
+        self.db_load.close()
