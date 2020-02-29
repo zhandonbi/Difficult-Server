@@ -30,3 +30,5 @@ def ASR(text):
         search_results = item_message.item_search_exact(key)
         if len(search_results) == 0:
             search_results = item_message.items_search_vague(key)
+        result[key] = search_results
+    return result
