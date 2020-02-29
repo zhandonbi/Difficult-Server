@@ -45,9 +45,12 @@ class ItemDb(object):
         :return: 所有符合搜索条件的物品条目格式{'item_ID':item_name,'item_ID2':item_name2...}
         """
         result = {}
-        """
-        code
-        """
+        sql = 'SELECT * FROM items WHERE Name = '+'"'+item_key+'"'
+        self.db_cur.execute(sql)
+        search_vague_results = self.db_cur.fetchall()
+        if len(search_vague_results) != 0:
+	        for i in range(len(search_vague_results)):
+                result['ID' '+' i] = search_vague_results[0][i]
         return result
 
     def items_read_all(self):
@@ -57,9 +60,13 @@ class ItemDb(object):
         :return: 字典形式，格式为{'item_ID':item_name,'item_ID2':item_name2...}
         """
         result = {}
-        """
-        code
-        """
+        Class0 = Class1 + Class2 + Class3 +Class4
+        sql = 'SELECT * FROM items WHERE Class = '+'"'+item_Class+'"'
+        self.db_cur.execute(sql)
+        read_all_results = self.db_cur.fetchall()
+        if len(read_all_results) != 0:
+	        for i in range(len(read_all_results)):
+                result['ID' '+' i] = read_all_results[0][i]
         return result
 
     def items_add(self, item_name:str, item_Class: dir()):
