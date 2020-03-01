@@ -6,9 +6,8 @@ from ASR.ASR import ASR
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8081)
+    app.run(host='0.0.0.0', port=11233)
 
 
 # 此行以下编辑你的代码
@@ -20,6 +19,7 @@ def get_classID():
         '3': '有害垃圾',
         '4': '厨余垃圾'
     }
+
 
 @app.route('/exact_search/', methods=['GET', 'POST'])
 def exact_search():
@@ -35,6 +35,7 @@ def exact_search():
                   }
     return result
 
+
 @app.route('/exact_search_ID/', methods=['GET', 'POST'])
 def exact_search_ID():
     result = {}
@@ -49,6 +50,57 @@ def exact_search_ID():
                   }
     return result
 
+
 @app.route('/vague_search/', methods=['GET', 'POST'])
 def vague_search():
-    pass
+    result = {}
+    if request.method == 'POST':
+        item_key = request.form['item_key']
+        item = ItemDb()
+        result = item.items_search_vague(item_key)
+        item.close()
+    else:
+        result = {'接口返回示例': {'items_num': 22,
+                             '667': {'Name': '鸡蛋包装盒', 'CLassID': '1'},
+                             '668': {'Name': '鸡蛋盒', 'CLassID': '1'},
+                             '670': {'Name': '鸡蛋盒包装', 'CLassID': '1'},
+                             '675': {'Name': '鸡蛋塑料保护壳', 'CLassID': '1'},
+                             '1313': {'Name': '塑料鸡蛋盒', 'CLassID': '1'},
+                             '1880': {'Name': '包裹着鸡蛋壳的餐巾纸', 'CLassID': '1'}},
+                  '如果您发出的物品不存在': {'item_num': 0},
+                  }
+    return result
+
+
+@app.route('/asr_search/', methods=['GET', 'POST'])
+def asr_search():
+    result = {}
+    if request.method == 'POST':
+        talk_text = request.form['talk_text']
+        result = ASR(talk_text)
+    else:
+        result = {'接口返回示例': {'鸡蛋': {'ID': 5249, 'Name': '鸡蛋', 'ClassID': 4},
+                             '垃圾袋': {'ID': 2668, 'Name': '垃圾袋', 'ClassID': 2}},
+                  '如果您发出的物品名不存在': {}
+                  }
+    return result
+
+
+@app.route('/get_all_item/', methods=['GET', 'POST'])
+def get_all_item():
+    result = {}
+    if request.method == 'POST':
+        class_ID = request.form['class_ID']
+        item = ItemDb()
+        result = item.items_read_all(class_ID)
+        item.close()
+    else:
+        result = {'接口返回示例': {'items_num': 665,
+                             '3958': {'Name': '1号电池', 'CLassID': '3'},
+                             '3959': {'Name': '502胶水', 'CLassID': '3'},
+                             '3960': {'Name': '5号电池', 'CLassID': '3'},
+                             '3961': {'Name': '704粘合剂', 'CLassID': '3'},
+                             '3962': {'Name': '7号电池', 'CLassID': '3'}},
+                  '如果您发出的ID异常': {}
+                  }
+    return result
