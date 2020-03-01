@@ -1,3 +1,5 @@
+# coding=UTF-8
+
 from db_operator.load_db import Load
 
 

@@ -1,8 +1,11 @@
+# coding=UTF-8
 from flask import Flask, request
 from db_operator.item_db import ItemDb
 from ASR.ASR import ASR
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8081)
