@@ -3,3 +3,5 @@
 /__pycache__/
 test_function.py
 /log/
+/uwsgi/
+uwsgi.ini
