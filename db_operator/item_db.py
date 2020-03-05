@@ -76,7 +76,7 @@ class ItemDb(object):
             return {'item_num': 0}
         return result
 
-    def items_read_all(self, ClassID: int = 0):
+    def items_read_all(self, ClassID: str):
         """
         一次性读取数据库所有内容(为减小数据量，只返回ID，与物品名)
         :param ClassID: 需要获取的物品类别默认为0所有
@@ -84,7 +84,7 @@ class ItemDb(object):
         """
         result = {}
         sql = ''
-        if ClassID == 0:
+        if ClassID == '0':
             sql = 'SELECT * FROM items'
         else:
             sql = 'SELECT * FROM items where ClassID_1 = "' + str(ClassID) + '"'
