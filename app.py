@@ -2,6 +2,7 @@
 from flask import Flask, request
 from db_operator.item_db import ItemDb
 from ASR.ASR import ASR
+from AIR.AIR import AIR
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -103,4 +104,15 @@ def get_all_item():
                              '3962': {'Name': '7号电池', 'CLassID': '3'}},
                   '如果您发出的ID异常': {}
                   }
+    return result
+
+
+@app.route('/air_search/', methods=['GET', 'POST'])
+def air_search():
+    result = {}
+    if request.method == 'POST':
+        item_picture = request.file['item_picture']
+        result = AIR(item_picture)
+    else:
+        result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
