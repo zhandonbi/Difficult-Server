@@ -113,6 +113,8 @@ def air_search():
     if request.method == 'POST':
         item_picture = request.files.get('item_picture')
         result = AIR(item_picture)
+        file_name = item_picture.filename
+        item_picture.save('static/'+file_name.replace('"',""))
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
