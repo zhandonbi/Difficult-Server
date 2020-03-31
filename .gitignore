@@ -6,3 +6,5 @@ test_function.py
 /uwsgi/
 uwsgi.ini
 /Update/
+/static/
+/AIR/SAVE_PB/
