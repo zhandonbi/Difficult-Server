@@ -1,8 +1,9 @@
 # coding=UTF-8
-from flask import Flask, request
+from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
 from ASR.ASR import ASR
 from AIR.AIR import AIR
+import json
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -116,3 +117,14 @@ def air_search():
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
+
+
+@app.route('/update_version/', methods=['GET', 'POST'])
+def update_version(item):
+    result = {}
+    if request.method == 'POST':
+        with open('./Update/version.json') as f:
+            version = json.load(f)
+        return version
+    else:
+        return send_from_directory(directory="./Update/RBelong.apk", filename="RBelong.apk", as_attachment=True)
