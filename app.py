@@ -122,11 +122,10 @@ def air_search():
 
 
 @app.route('/update_version/', methods=['GET', 'POST'])
-def update_version(item):
-    result = {}
+def update_version():
     if request.method == 'POST':
         with open('./Update/version.json') as f:
             version = json.load(f)
         return version
     else:
-        return send_from_directory(directory="./Update/RBelong.apk", filename="RBelong.apk", as_attachment=True)
+        return send_from_directory(directory="./Update/", filename="RBelong.apk", as_attachment=True)
