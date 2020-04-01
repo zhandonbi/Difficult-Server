@@ -8,3 +8,6 @@ uwsgi.ini
 /Update/
 /static/
 /AIR/SAVE_PB/
+/AIR/__pycache__/
+/ASR/__pycache__/
+/db_operator/__pycache__/
