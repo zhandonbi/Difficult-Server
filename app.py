@@ -2,14 +2,14 @@
 from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
 from ASR.ASR import ASR
-from AIR.customize_service import *
+from AIR.AIR import *
 import json
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 if __name__ == '__main__':
-    air = garbage_classify_service()
+    air = AIR()
     app.run(host='0.0.0.0', port=11233)
 
 
