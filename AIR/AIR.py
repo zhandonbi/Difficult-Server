@@ -58,7 +58,7 @@ class AIR(object):
         sess = tf.Session()
         self.input_size = 456
         self.model = tf.saved_model.loader.load(
-            sess, [tag_constants.SERVING], 'AIR/model/')
+            sess, [tag_constants.SERVING], 'AIR/model')
         self.graph = tf.get_default_graph()
 
     def center_img(self, img, size=None, fill_value=255):
