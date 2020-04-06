@@ -55,7 +55,7 @@ label_id_name_dict = \
 
 class AIR(object):
     def __init__(self):
-        sess = tf.Session()
+        sess = tf.Session(config=tf.ConfigProto(device_count={'cpu': 0}))
         self.input_size = 456
         self.model = tf.saved_model.loader.load(
             sess, [tag_constants.SERVING], './AIR/model')
