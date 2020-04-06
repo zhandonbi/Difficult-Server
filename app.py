@@ -8,8 +8,8 @@ import json
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
+air = AIR()
 if __name__ == '__main__':
-    air = AIR()
     app.run(host='0.0.0.0', port=11233)
 
 
