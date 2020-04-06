@@ -113,7 +113,7 @@ def get_all_item():
 def air_search():
     result = {}
     if request.method == 'POST':
-        if request.files.get("image"):
+        if request.files.get("item_picture"):
             image = request.files["image"].read()
             image = Image.open(io.BytesIO(image))
             result = air.predict(image)
