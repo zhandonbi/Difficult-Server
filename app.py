@@ -114,7 +114,7 @@ def air_search():
     result = {}
     if request.method == 'POST':
         if request.files.get("item_picture"):
-            image = request.files["image"].read()
+            image = request.files["item_picture"].read()
             image = Image.open(io.BytesIO(image))
             result = air.predict(image)
     else:
