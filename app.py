@@ -2,13 +2,14 @@
 from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
 from ASR.ASR import ASR
-from AIR.AIR import AIR
+from AIR.AIR import *
 import json
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 if __name__ == '__main__':
+    air = AIR()
     app.run(host='0.0.0.0', port=11233)
 
 
@@ -112,10 +113,10 @@ def get_all_item():
 def air_search():
     result = {}
     if request.method == 'POST':
-        item_picture = request.files.get('item_picture')
-        result = AIR(item_picture)
-        file_name = item_picture.filename
-        item_picture.save('static/'+file_name.replace('"',""))
+        if request.files.get("image"):
+            image = request.files["image"].read()
+            image = Image.open(io.BytesIO(image))
+            result = air.predict(image)
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
