@@ -108,8 +108,10 @@ class AIR(object):
             # run
             pred_score = self.sess.run(
                 [output_score], feed_dict={input_images: img})
+
         if pred_score is not None:
             pred_label = np.argmax(pred_score[0], axis=1)[0]
+            print(label_id_name_dict[str(pred_label)])
             result = {'result': label_id_name_dict[str(pred_label)]}
         else:
             result = {'result': 'predict score is None'}
