@@ -8,7 +8,7 @@ import json
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
-air = AIR()
+# air = AIR()
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=11233)
 
@@ -116,7 +116,7 @@ def air_search():
         if request.files.get("item_picture"):
             image = request.files["item_picture"].read()
             image = Image.open(io.BytesIO(image))
-            result = air.predict(image)
+            # result = air.predict(image)
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
