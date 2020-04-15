@@ -115,8 +115,7 @@ def air_search():
     if request.method == 'POST':
         if request.files.get("item_picture"):
             image = request.files["item_picture"].read()
-            image = Image.open(io.BytesIO(image))
-            # result = air.predict(image)
+            result = temp_AIR(image)
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
