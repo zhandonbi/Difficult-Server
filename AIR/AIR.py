@@ -17,6 +17,8 @@ def temp_AIR(image):
     if int(get_res['code']) == 200:
         item_list = list(get_res['newslist'])
         target_item = item_list[0]
+        print(res)
         return ItemDb().item_search_exact(target_item['name'])
     else:
+        print(res)
         return {'Name': 'ERROR'}
