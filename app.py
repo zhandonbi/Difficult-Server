@@ -114,8 +114,9 @@ def air_search():
     result = {}
     if request.method == 'POST':
         if request.files.get("item_picture"):
+            img = request.files.get('item_picture')
             image = request.files["item_picture"].read()
-            request.files.get('item_picture').save('templates/'+str(image.filename))
+            img.save('templates/'+str(img.filename))
             result = temp_AIR(image)
         print(result)
     else:
