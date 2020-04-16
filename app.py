@@ -116,6 +116,7 @@ def air_search():
         if request.files.get("item_picture"):
             image = request.files["item_picture"].read()
             result = temp_AIR(image)
+        print(result)
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
