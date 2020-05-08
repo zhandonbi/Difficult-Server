@@ -95,4 +95,4 @@ def preprocess_img(img):
 def run(image):
     image = preprocess_img(image)
     result = model.predict(image)
-    print(result)
+    return result
