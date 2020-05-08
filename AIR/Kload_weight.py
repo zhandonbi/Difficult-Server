@@ -115,5 +115,10 @@ def preprocess_img(img):
 
 def run(image):
     image = preprocess_img(image)
-    result = Kmodel.predict(image)
+    pred_score = Kmodel.predict(image)
+    if pred_score is not None:
+        pred_label = np.argmax(pred_score[0], axis=1)[0]
+        result = {'result': label_id_name_dict[str(pred_label)]}
+    else:
+        result = {'result': 'predict score is None'}
     return result
