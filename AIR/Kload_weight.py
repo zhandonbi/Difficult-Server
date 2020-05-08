@@ -2,9 +2,8 @@ import io
 import numpy as np
 from PIL import Image
 from keras_efficientnets import EfficientNetB5
-import numpy as np
 from AIR.Groupnormalization import GroupNormalization
-from keras.layers import Dense, Input, Dropout, Activation,GlobalAveragePooling2D,LeakyReLU,BatchNormalization
+from keras.layers import Dense,  Dropout, GlobalAveragePooling2D
 from keras.models import Model
 from keras.optimizers import Nadam
 
@@ -73,6 +72,7 @@ def load_model():
     metrics = ['accuracy']
     model.compile(loss=objective, optimizer=optimizer, metrics=metrics)
     model.load_weights('AIR/HDF5/weights_028_0.5235.h5')
+    print('模型完成载入')
     return model
 
 
@@ -114,7 +114,6 @@ def preprocess_img(img):
 
 
 def run(image):
-    image = Image.open(image)
     image = preprocess_img(image)
     result = kmodel.predict(image)
     return result
