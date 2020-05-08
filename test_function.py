@@ -6,5 +6,5 @@ from AIR.AIR import *
 
 if __name__ == '__main__':
     print('正在运行功能测试，注意不要使用在正式环境中')
-    with open('AIR/SAVE_PB/fimg_0.jpg','rb') as f:
+    with open('AIR/HDF5/selfPIC.jpg','rb') as f:
         print(temp_AIR(f.read()))
