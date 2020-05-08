@@ -92,6 +92,7 @@ def center_img(img, size=None, fill_value=255):
 
 
 def preprocess_img(img):
+    img = Image.open(img)
     resize_scale = 456 / max(img.size[:2])
     img = img.resize(
         (int(img.size[0] * resize_scale), int(img.size[1] * resize_scale)))
