@@ -116,4 +116,4 @@ def preprocess_img(img):
 def run(image):
     image = preprocess_img(image)
     result = Kmodel.predict(image)
-    print(result)
+    return result
