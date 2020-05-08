@@ -1,6 +1,6 @@
 from keras_efficientnets import EfficientNetB5
 import numpy as np
-from Groupnormalization import GroupNormalization
+from AIR.Groupnormalization import GroupNormalization
 from keras.layers import Dense, Input, Dropout, Activation,GlobalAveragePooling2D,LeakyReLU,BatchNormalization
 from keras.models import Model
 from keras.optimizers import Nadam
