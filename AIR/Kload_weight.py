@@ -52,7 +52,7 @@ def load_model():
                            input_shape=(456, 456, 3),
                            classes=40,
                            pooling=max)
-    model.load_weights('AIR/weights_028_0.5235.h5')
+    model.load_weights('AIR/HDF5/weights_028_0.5235.h5')
     return model
 
 
