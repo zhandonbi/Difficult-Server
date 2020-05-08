@@ -101,7 +101,7 @@ def preprocess_img(img):
     img = img[:, :, ::-1]
     img = center_img(img, 456)
     img = img[np.newaxis, :, :, :]
-    img = img.astype(img, np.float32) / 225.0
+    img = np.asarray(img, np.float32) / 255.0
     mean = [0.56719673, 0.5293289, 0.48351972]
     std = [0.20874391, 0.21455203, 0.22451781]
     img[..., 0] -= mean[0]
