@@ -1,5 +1,9 @@
 from keras_efficientnets import EfficientNetB5
 import numpy as np
+from Groupnormalization import GroupNormalization
+from keras.layers import Dense, Input, Dropout, Activation,GlobalAveragePooling2D,LeakyReLU,BatchNormalization
+from keras.models import Model
+from keras.optimizers import Nadam
 
 label_id_name_dict = \
     {
@@ -52,11 +56,24 @@ def load_model():
                            input_shape=(456, 456, 3),
                            classes=40,
                            pooling=max)
+    for i, layer in enumerate(model.layers):
+        if "batch_normalization" in layer.name:
+            model.layers[i] = GroupNormalization(groups=32, axis=-1, epsilon=0.00001)
+    x = model.output
+    x = GlobalAveragePooling2D()(x)
+    x = Dropout(0.4)(x)
+    predictions = Dense(40, activation='softmax')(x)  # activation="linear",activation='softmax'
+    model = Model(input=model.input, output=predictions)
+    optimizer = Nadam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
+    # optimizer = SGD(lr=FLAGS.learning_rate, momentum=0.9)
+    objective = 'categorical_crossentropy'
+    metrics = ['accuracy']
+    model.compile(loss=objective, optimizer=optimizer, metrics=metrics)
     model.load_weights('AIR/HDF5/weights_028_0.5235.h5')
     return model
 
 
-model = load_model()
+Kmodel = load_model()
 
 
 def center_img(img, size=None, fill_value=255):
@@ -94,5 +111,5 @@ def preprocess_img(img):
 
 def run(image):
     image = preprocess_img(image)
-    result = model.predict(image)
+    result = kmodel.predict(image)
     return result
