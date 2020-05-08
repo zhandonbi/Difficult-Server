@@ -1,3 +1,6 @@
+import io
+import numpy as np
+from PIL import Image
 from keras_efficientnets import EfficientNetB5
 import numpy as np
 from AIR.Groupnormalization import GroupNormalization
@@ -110,6 +113,7 @@ def preprocess_img(img):
 
 
 def run(image):
+    image = Image.open(image)
     image = preprocess_img(image)
     result = kmodel.predict(image)
     return result
