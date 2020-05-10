@@ -3,9 +3,11 @@ import numpy as np
 from PIL import Image
 from keras_efficientnets import EfficientNetB5
 from AIR.Groupnormalization import GroupNormalization
-from keras.layers import Dense,  Dropout, GlobalAveragePooling2D
+from keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from keras.models import Model
 from keras.optimizers import Nadam
+from AIR.resnet50 import *
+import tensorflow as tf
 
 label_id_name_dict = \
     {
@@ -71,13 +73,11 @@ def load_model():
     objective = 'categorical_crossentropy'
     metrics = ['accuracy']
     model.compile(loss=objective, optimizer=optimizer, metrics=metrics)
-    model.load_weights('AIR/HDF5/weights_028_0.5235.h5')
+    model.load_weights('AIR/HDF5/weights_008_1.0000.h5')
     print('模型完成载入')
     return model
 
-
 Kmodel = load_model()
-
 
 def center_img(img, size=None, fill_value=255):
     h, w = img.shape[:2]
@@ -89,7 +89,6 @@ def center_img(img, size=None, fill_value=255):
     center_y = (size - h) // 2
     background[center_y:center_y + h, center_x:center_x + w] = img
     return background
-
 
 def preprocess_img(img):
     img = Image.open(img)
@@ -112,12 +111,11 @@ def preprocess_img(img):
     img[..., 2] /= std[2]
     return img
 
-
 def run(image):
     image = preprocess_img(image)
     pred_score = Kmodel.predict(image)
     if pred_score is not None:
-        pred_label = np.argmax(pred_score[0], axis=1)[0]
+        pred_label = np.argmax(pred_score[0])
         result = {'result': label_id_name_dict[str(pred_label)]}
     else:
         result = {'result': 'predict score is None'}
