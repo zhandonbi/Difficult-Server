@@ -6,7 +6,6 @@ from AIR.Groupnormalization import GroupNormalization
 from keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from keras.models import Model
 from keras.optimizers import Nadam
-from AIR.resnet50 import *
 import tensorflow as tf
 
 label_id_name_dict = \
