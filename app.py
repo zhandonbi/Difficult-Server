@@ -9,16 +9,24 @@ import json
 import io
 import base64
 
-  # 神经网络初始化
+# 神经网络初始化
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 # air = AIR()
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=11233, threaded=False)
+    app.run(host='0.0.0.0', port=11233)
 
 
 # 此行以下编辑你的代码
+
+
+@app.before_first_request
+def first_quest():
+    global gcs_load
+    gcs_load = GCS()
+
+
 @app.route('/get_classID/', methods=['GET'])
 def get_classID():
     return {
@@ -123,7 +131,6 @@ def air_search():
             img_b64encode = base64.b64encode(img.read())  # base64编码
             img_b64decode = base64.b64decode(img_b64encode)  # base64解码
             image = io.BytesIO(img_b64decode)
-            gcs_load = GCS()
             result = gcs_load.predict(image)
         else:
             result = {'ID': -1, 'Name': '未检测到图片', 'classID': -1}
