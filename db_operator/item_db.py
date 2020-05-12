@@ -37,7 +37,7 @@ class ItemDb(object):
             result['Name'] = search_results[0][1]
             result['ClassID'] = int(search_results[0][2])
         else:
-            return {'ID': -1, 'Name': "NOT EXIST", 'ClassID': -1, }
+            return {'ID': -1, 'Name': "NOT EXIST", 'ClassID': -1}
         return result
 
     def item_search_exact(self, item_name: str):

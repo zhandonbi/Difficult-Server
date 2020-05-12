@@ -1,16 +1,21 @@
 # coding=UTF-8
 from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
+from PIL import Image
 from ASR.ASR import ASR
-from AIR.AIR import *
-import json
+from AIR.SM_load import GCS
 
+import json
+import io
+import base64
+
+gcs_load = GCS()  # 神经网络初始化
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 # air = AIR()
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=11233)
+    app.run(host='0.0.0.0', port=11233, threaded=False)
 
 
 # 此行以下编辑你的代码
@@ -115,10 +120,12 @@ def air_search():
     if request.method == 'POST':
         if request.files.get("item_picture"):
             img = request.files.get('item_picture')
-            image = request.files["item_picture"].read()
-            img.save('templates/'+str(img.filename))
-            result = temp_AIR(image)
-        print(result)
+            img_b64encode = base64.b64encode(img.read())  # base64编码
+            img_b64decode = base64.b64decode(img_b64encode)  # base64解码
+            image = io.BytesIO(img_b64decode)
+            result = gcs_load.predict(image)
+        else:
+            result = {'ID': -1, 'Name': '未检测到图片', 'classID': -1}
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
