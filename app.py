@@ -136,6 +136,7 @@ def air_search():
             result = {'ID': -1, 'Name': '未检测到图片', 'classID': -1}
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
+    print(result)
     return result
 
 
