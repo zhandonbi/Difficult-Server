@@ -1,16 +1,23 @@
 # coding=UTF-8
 from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
+from PIL import Image
 from ASR.ASR import ASR
-from AIR.AIR import *
+from AIR.Kload_weight import *
 import json
+import random
+import os
+import base64
+import threading
+
+global lock
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
 # air = AIR()
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=11233)
+    app.run(host='0.0.0.0', port=11233, threaded=False)
 
 
 # 此行以下编辑你的代码
@@ -115,9 +122,12 @@ def air_search():
     if request.method == 'POST':
         if request.files.get("item_picture"):
             img = request.files.get('item_picture')
-            image = request.files["item_picture"].read()
-            img.save('templates/'+str(img.filename))
-            result = temp_AIR(image)
+            img_b64encode = base64.b64encode(img.read())  # base64编码
+            img_b64decode = base64.b64decode(img_b64encode)  # base64解码
+            image = io.BytesIO(img_b64decode)
+            result = AImage(Image.open(image))
+        else:
+            result = {'ID': -1, 'Name': '未检测到图片', 'classID': -1}
         print(result)
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}

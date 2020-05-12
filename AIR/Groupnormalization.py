@@ -3,10 +3,10 @@ import os
 os.environ["KERAS_BACKEND"] = "tensorflow"
 
 from keras.engine import Layer, InputSpec
-from keras import initializers
-from keras import regularizers
-from keras import constraints
-from keras import backend as K
+from tensorflow.keras import initializers
+from tensorflow.keras import regularizers
+from tensorflow.keras import constraints
+from tensorflow.keras import backend as K
 
 from keras.utils.generic_utils import get_custom_objects
 

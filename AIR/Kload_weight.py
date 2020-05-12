@@ -1,4 +1,6 @@
+#! -*- coding: utf-8 -*-
 import io
+import os
 import numpy as np
 from PIL import Image
 from keras_efficientnets import EfficientNetB5
@@ -6,58 +8,19 @@ from AIR.Groupnormalization import GroupNormalization
 from keras.layers import Dense, Dropout, GlobalAveragePooling2D
 from keras.models import Model
 from keras.optimizers import Nadam
+from db_operator.item_db import ItemDb
 import tensorflow as tf
-
-label_id_name_dict = \
-    {
-        "0": "其他垃圾/一次性快餐盒",
-        "1": "其他垃圾/污损塑料",
-        "2": "其他垃圾/烟蒂",
-        "3": "其他垃圾/牙签",
-        "4": "其他垃圾/破碎花盆及碟碗",
-        "5": "其他垃圾/竹筷",
-        "6": "厨余垃圾/剩饭剩菜",
-        "7": "厨余垃圾/大骨头",
-        "8": "厨余垃圾/水果果皮",
-        "9": "厨余垃圾/水果果肉",
-        "10": "厨余垃圾/茶叶渣",
-        "11": "厨余垃圾/菜叶菜根",
-        "12": "厨余垃圾/蛋壳",
-        "13": "厨余垃圾/鱼骨",
-        "14": "可回收物/充电宝",
-        "15": "可回收物/包",
-        "16": "可回收物/化妆品瓶",
-        "17": "可回收物/塑料玩具",
-        "18": "可回收物/塑料碗盆",
-        "19": "可回收物/塑料衣架",
-        "20": "可回收物/快递纸袋",
-        "21": "可回收物/插头电线",
-        "22": "可回收物/旧衣服",
-        "23": "可回收物/易拉罐",
-        "24": "可回收物/枕头",
-        "25": "可回收物/毛绒玩具",
-        "26": "可回收物/洗发水瓶",
-        "27": "可回收物/玻璃杯",
-        "28": "可回收物/皮鞋",
-        "29": "可回收物/砧板",
-        "30": "可回收物/纸板箱",
-        "31": "可回收物/调料瓶",
-        "32": "可回收物/酒瓶",
-        "33": "可回收物/金属食品罐",
-        "34": "可回收物/锅",
-        "35": "可回收物/食用油桶",
-        "36": "可回收物/饮料瓶",
-        "37": "有害垃圾/干电池",
-        "38": "有害垃圾/软膏",
-        "39": "有害垃圾/过期药物"
-    }
+from keras import backend
+from keras.optimizers import adam, Nadam
+import shutil
 
 
 def load_model():
+    num_classes = 50
     model = EfficientNetB5(weights=None,
                            include_top=False,
                            input_shape=(456, 456, 3),
-                           classes=40,
+                           classes=num_classes,
                            pooling=max)
     for i, layer in enumerate(model.layers):
         if "batch_normalization" in layer.name:
@@ -65,18 +28,37 @@ def load_model():
     x = model.output
     x = GlobalAveragePooling2D()(x)
     x = Dropout(0.4)(x)
-    predictions = Dense(40, activation='softmax')(x)  # activation="linear",activation='softmax'
+    predictions = Dense(num_classes, activation='softmax')(x)  # activation="linear",activation='softmax'
     model = Model(input=model.input, output=predictions)
     optimizer = Nadam(lr=1e-4, beta_1=0.9, beta_2=0.999, epsilon=1e-08, schedule_decay=0.004)
     # optimizer = SGD(lr=FLAGS.learning_rate, momentum=0.9)
     objective = 'categorical_crossentropy'
     metrics = ['accuracy']
     model.compile(loss=objective, optimizer=optimizer, metrics=metrics)
-    model.load_weights('AIR/HDF5/weights_008_1.0000.h5')
+    model.load_weights('AIR/HDF5/res.h5')
     print('模型完成载入')
     return model
 
+
+global graph, Kmodel
 Kmodel = load_model()
+#graph = tf.get_default_graph()
+
+def get_SM():
+    model = load_model()
+    signature = tf.saved_model.signature_def_utils.predict_signature_def(
+        inputs={'input_img': model.input}, outputs={'output_score': model.output})
+    builder = tf.saved_model.builder.SavedModelBuilder('AIR/model')
+    legacy_init_op = tf.group(tf.tables_initializer(), name='legacy_init_op')
+    builder.add_meta_graph_and_variables(
+        sess=backend.get_session(),
+        tags=[tf.saved_model.tag_constants.SERVING],
+        signature_def_map={
+            'predict_images': signature,
+        },
+        legacy_init_op=legacy_init_op)
+    builder.save()
+
 
 def center_img(img, size=None, fill_value=255):
     h, w = img.shape[:2]
@@ -89,8 +71,8 @@ def center_img(img, size=None, fill_value=255):
     background[center_y:center_y + h, center_x:center_x + w] = img
     return background
 
+
 def preprocess_img(img):
-    img = Image.open(img)
     resize_scale = 456 / max(img.size[:2])
     img = img.resize(
         (int(img.size[0] * resize_scale), int(img.size[1] * resize_scale)))
@@ -108,14 +90,63 @@ def preprocess_img(img):
     img[..., 0] /= std[0]
     img[..., 1] /= std[1]
     img[..., 2] /= std[2]
+    print('图像处理完成')
     return img
 
-def run(image):
+
+def AImage(image):
+    result = {'ID': -1, 'Name': "NOT EXIST", 'ClassID': -1}
     image = preprocess_img(image)
-    pred_score = Kmodel.predict(image)
-    if pred_score is not None:
-        pred_label = np.argmax(pred_score[0])
-        result = {'result': label_id_name_dict[str(pred_label)]}
-    else:
-        result = {'result': 'predict score is None'}
+    with graph.as_default():
+        pred_score = Kmodel.predict(image)
+        if pred_score is not None:
+            pred_label = np.argmax(pred_score[0])
+            db = ItemDb()
+            label_id_name_dict = \
+                {
+                    "0": "一次性快餐盒",
+                    "1": "污损塑料",
+                    "2": "烟蒂",
+                    "3": "牙签",
+                    "4": "破碎花盆及碟碗",
+                    "5": "竹筷",
+                    "6": "剩饭剩菜",
+                    "7": "大骨头",
+                    "8": "水果果皮",
+                    "9": "水果果肉",
+                    "10": "茶叶渣",
+                    "11": "菜叶菜根",
+                    "12": "蛋壳",
+                    "13": "鱼骨",
+                    "14": "充电宝",
+                    "15": "包",
+                    "16": "化妆品瓶",
+                    "17": "塑料玩具",
+                    "18": "塑料碗盆",
+                    "19": "塑料衣架",
+                    "20": "快递纸袋",
+                    "21": "插头电线",
+                    "22": "旧衣服",
+                    "23": "易拉罐",
+                    "24": "枕头",
+                    "25": "毛绒玩具",
+                    "26": "洗发水瓶",
+                    "27": "玻璃杯",
+                    "28": "皮鞋",
+                    "29": "砧板",
+                    "30": "纸板箱",
+                    "31": "调料瓶",
+                    "32": "酒瓶",
+                    "33": "金属食品罐",
+                    "34": "锅",
+                    "35": "食用油桶",
+                    "36": "饮料瓶",
+                    "37": "干电池",
+                    "38": "软膏",
+                    "39": "过期药物"
+                }
+            result = db.item_search_exact(label_id_name_dict[str(pred_label)])
+            db.close()
+        else:
+            result = {'ID': -1, 'Name': "NOT EXIST", 'ClassID': -1}
     return result
