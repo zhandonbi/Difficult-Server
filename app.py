@@ -131,11 +131,11 @@ def air_search():
             img_b64encode = base64.b64encode(img.read())  # base64编码
             img_b64decode = base64.b64decode(img_b64encode)  # base64解码
             image = io.BytesIO(img_b64decode)
-            result = gcs_load.predict(image)
+            result['1'] = gcs_load.predict(image)
         else:
-            result = {'ID': -1, 'Name': '未检测到图片', 'classID': -1}
+            result['1'] = {'ID': -1, 'Name': '未检测到图片', 'ClassID': -1}
     else:
-        result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
+        result['1'] = {'ID': -1, 'Name': '测试用例', 'ClassID': -1}
     print(result)
     return result
 
