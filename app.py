@@ -3,15 +3,13 @@ from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
 from PIL import Image
 from ASR.ASR import ASR
-from AIR.Kload_weight import *
+from AIR.SM_load import GCS
+
 import json
-import random
-import os
+import io
 import base64
-import threading
 
-global lock
-
+gcs_load = GCS()  # 神经网络初始化
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
@@ -125,10 +123,9 @@ def air_search():
             img_b64encode = base64.b64encode(img.read())  # base64编码
             img_b64decode = base64.b64decode(img_b64encode)  # base64解码
             image = io.BytesIO(img_b64decode)
-            result = AImage(Image.open(image))
+            result = gcs_load.predict(image)
         else:
             result = {'ID': -1, 'Name': '未检测到图片', 'classID': -1}
-        print(result)
     else:
         result = {'ID': -1, 'Name': '测试用例', 'classID': -1}
     return result
