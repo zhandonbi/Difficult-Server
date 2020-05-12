@@ -100,11 +100,13 @@ class GCS(object):
         img[..., 0] /= std[0]
         img[..., 1] /= std[1]
         img[..., 2] /= std[2]
+        print("完成了图像处理")
         return img
 
     def predict(self, image):
         result = {}
         image = self.preprocess_img(image)
+        print("开始预测")
         pred_score = self.sess.run([self.output_score], feed_dict={self.input_images: image})
         if pred_score is not None:
             pred_label = np.argmax(pred_score[0], axis=1)[0]
