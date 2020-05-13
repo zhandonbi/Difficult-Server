@@ -4,7 +4,7 @@ from db_operator.item_db import ItemDb
 from PIL import Image
 from ASR.ASR import ASR
 from AIR.SM_load import GCS
-
+from AIR.AIR import temp_AIR
 import json
 import io
 import base64
@@ -18,8 +18,8 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=11233)
 
 # 此行以下编辑你的代码
-global gcs_load
-gcs_load = GCS()
+#global gcs_load
+#gcs_load = GCS()
 
 
 @app.route('/get_classID/', methods=['GET'])
@@ -122,11 +122,8 @@ def air_search():
     result = {}
     if request.method == 'POST':
         if request.files.get("item_picture"):
-            img = request.files.get('item_picture')
-            img_b64encode = base64.b64encode(img.read())  # base64编码
-            img_b64decode = base64.b64decode(img_b64encode)  # base64解码
-            image = io.BytesIO(img_b64decode)
-            result['1'] = gcs_load.predict(image)
+            img = request.files.get('item_picture').read()
+            result = temp_AIR(img)
         else:
             result['1'] = {'ID': -1, 'Name': '未检测到图片', 'ClassID': -1}
     else:
