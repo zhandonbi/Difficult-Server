@@ -17,14 +17,9 @@ app.config['JSON_AS_ASCII'] = False
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=11233)
 
-
 # 此行以下编辑你的代码
-
-
-@app.before_first_request
-def first_quest():
-    global gcs_load
-    gcs_load = GCS()
+global gcs_load
+gcs_load = GCS()
 
 
 @app.route('/get_classID/', methods=['GET'])
