@@ -5,5 +5,5 @@ from AIR.SM_load import GCS
 
 if __name__ == '__main__':
     print('正在运行功能测试，注意不要使用在正式环境中')
-    with open('AIR/HDF5/selfPIC.jpg', 'rb') as f:
+    with open('/usr/local/webserver/RSC/fimg_0.jpg', 'rb') as f:
         print(GCS().predict(f))
