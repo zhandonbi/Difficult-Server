@@ -1,4 +1,6 @@
 # coding=UTF-8
+import datetime
+
 from flask import Flask, request, send_from_directory
 from db_operator.item_db import ItemDb
 from PIL import Image
@@ -8,18 +10,27 @@ from AIR.AIR import temp_AIR
 import json
 import io
 import base64
+from db_operator.records_db import RecordsDb
 
 # 神经网络初始化
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
 
+
+def get_date_now():
+    return str(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+
+
 # air = AIR()
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=11233)
+
 
 # 此行以下编辑你的代码
-#global gcs_load
-#gcs_load = GCS()
+# global gcs_load
+# gcs_load = GCS()
+
+@app.route('/', methods=['GET'])
+def hello():
+    return "hello world"
 
 
 @app.route('/get_classID/', methods=['GET'])
@@ -30,6 +41,53 @@ def get_classID():
         '3': '有害垃圾',
         '4': '厨余垃圾'
     }
+
+
+@app.route('/records_post/', methods=['POST', 'GET'])
+def records_post():
+    '''
+    同时接受两个键值
+    1.设备搜传输的图片信息: image
+    2.设备号信息：Can_ID
+    :return: 传入数据库成功/失败的信息
+    '''
+    if request.method == 'POST':
+        image = request.form['image']
+        records = RecordsDb()
+        image_method = GCS()
+        temp_res = image_method.predict(image)
+        Time = get_date_now()
+        Can_ID = request.form['Can_ID']
+        Rubbish_Class = int(temp_res.form['Rubbish_Class'])
+        res = records.records_add(Can_ID, Rubbish_Class, Time)
+        return res
+
+
+@app.route('/ID_research/', methods=['POST'])
+def ID_research():
+    if request.method == 'POST':
+        record = RecordsDb()
+        Can_ID = request.form['Can_ID']
+        res = record.records_search(Can_ID)
+        return res
+
+
+@app.route('/total_records/', methods=['GET'])
+def total_records():
+    records = RecordsDb()
+    return records.cal_all_records()
+
+
+@app.route('/find_id/',methods=['POST'])
+def FI():
+    if request.method is 'POST':
+        id = request.form['deviceID']
+        res = {
+            'status':True,
+            'de..':1,
+            'runbbis':1
+        }
+        return res
 
 
 @app.route('/exact_search/', methods=['GET', 'POST'])
@@ -140,3 +198,7 @@ def update_version():
         return version
     else:
         return send_from_directory(directory="./Update/", filename="RBelong.apk", as_attachment=True)
+
+
+if __name__ == '__main__':
+    app.run(debug=['True'], port=8080)

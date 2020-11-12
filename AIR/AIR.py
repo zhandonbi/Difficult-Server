@@ -46,4 +46,4 @@ def temp_AIR(image):
         return result
     else:
         print(res)
-        return {'Name': 'ERROR'}
+        return {'Name': 'ERROR', 'ClassID': -1}
