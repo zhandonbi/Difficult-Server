@@ -29,7 +29,8 @@ class ItemDb(object):
         :return: 返回一个字典，包含该垃圾ID以及所属所有类别{'ID':1,'Name':xxx,'ClassID':1/2/3/4,}
         """
         result = {}
-        sql = 'SELECT * FROM items WHERE ID = ' + str(item_ID)
+        # sql = 'SELECT * FROM items WHERE ID = ' + str(item_ID)
+        sql = 'SELECT * FROM items WHERE ID = {}'.format(item_ID)
         self.db_cur.execute(sql)
         search_results = self.db_cur.fetchall()
         if len(search_results) != 0:
