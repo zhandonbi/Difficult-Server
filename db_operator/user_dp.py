@@ -7,7 +7,7 @@ class UserDb(object):
         """
         在此类初始化时就已经自动连接目标数据库
         """
-        self.db_load = Load('cfg/RcDb.json')
+        self.db_load = Load('../cfg/RcDb.json')
         # db_operator是pymysql库中pymysql.connect()的返回对象
         self.db_operator = self.db_load.get_DB_operator()
         # db_cur与pymysql库中cursor用法完全一致
