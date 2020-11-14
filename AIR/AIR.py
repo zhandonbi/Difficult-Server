@@ -40,7 +40,7 @@ def temp_AIR(image):
                     'ClassID': ID,
                     'Name': item['name']
                 }
-                result[str(i)] = temp
+                result = temp
                 i += 1
         print(res)
         return result
