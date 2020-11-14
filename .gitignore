@@ -12,3 +12,4 @@ uwsgi.ini
 /ASR/__pycache__/
 /db_operator/__pycache__/
 /AIR/HDF5/
+/L_test.py
