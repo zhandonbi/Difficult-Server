@@ -52,13 +52,16 @@ def records_post():
     :return: 传入数据库成功/失败的信息
     '''
     if request.method == 'POST':
-        image = request.form['image']
+        if request.files.get("image"):
+            img = request.files.get("image").read()
+            temp_res = temp_AIR(img)
+            print(temp_res)
+        else:
+            return '未检测到图片'
         records = RecordsDb()
-        image_method = GCS()
-        temp_res = image_method.predict(image)
         Time = get_date_now()
-        Can_ID = request.form['Can_ID']
-        Rubbish_Class = int(temp_res.form['Rubbish_Class'])
+        Can_ID = '1313d'
+        Rubbish_Class = int(temp_res['ClassID'])
         res = records.records_add(Can_ID, Rubbish_Class, Time)
         return res
 

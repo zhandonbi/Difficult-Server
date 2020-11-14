@@ -11,7 +11,12 @@ uwsgi.ini
 /AIR/__pycache__/
 /ASR/__pycache__/
 /db_operator/__pycache__/
+<<<<<<< HEAD
 /logs/
 /templates/
 uwsgi.pid
 /AIR/HDF5/
+=======
+/AIR/HDF5/
+/L_test.py
+>>>>>>> a882b20004c185b9a5081b440cf6d7d58bcdfed2
