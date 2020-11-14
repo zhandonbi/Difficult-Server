@@ -20,7 +20,7 @@ class RecordsDb(object):
         """
         在此类初始化时就已经自动连接目标数据库
         """
-        self.db_load = Load('../cfg/RcDb.json')
+        self.db_load = Load('cfg/RcDb.json')
         # db_operator是pymysql库中pymysql.connect()的返回对象
         self.db_operator = self.db_load.get_DB_operator()
         # db_cur与pymysql库中cursor用法完全一致
@@ -35,7 +35,8 @@ class RecordsDb(object):
         :param Time：程序运行时的时间
         :return: 添加条目的信息
         """
-        sql = 'insert into Can_Records(Can_ID,Rubbish_Class,Time) values({0},{1},{2}) '.format(Can_ID, Rubbish_Class,
+        Can_ID = 'IMX6_ENV_RBELONG_001'
+        sql = 'insert into Can_Records(Can_ID,Rubbish_Class,Time) values("{0}",{1},{2}) '.format(Can_ID, Rubbish_Class,
                                                                                                Time)
         self.db_cur.execute(sql)
         self.db_operator.commit()
@@ -66,10 +67,10 @@ class RecordsDb(object):
 
         :return:
         """
-        sql = 'SELECT * FROM Can_Records WHERE Rubbish_CLass = {}'.format(Rubbish_Class)
+        sql = 'SELECT * FROM Can_Records WHERE Rubbish_Class = {}'.format(Rubbish_Class)
         self.db_cur.execute(sql)
         search_results = self.db_cur.fetchall()
-        result = len(search_results) + 1
+        result = len(search_results)
         return result
 
     def cal_all_records(self):
