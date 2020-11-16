@@ -11,6 +11,7 @@ import json
 import io
 import base64
 from db_operator.records_db import RecordsDb
+from db_operator.Can_status_db import CanStatusDb
 
 # 神经网络初始化
 app = Flask(__name__)
@@ -81,14 +82,39 @@ def total_records():
     return records.cal_all_records()
 
 
-@app.route('/find_id/',methods=['POST'])
+@app.route('/Canstatus_post/', methods=['POST'])
+def Can_status_post():
+    if request.method == 'POST':
+        Can_ID = request.form['Can_ID']
+        GK152_state = request.form['GK152_state']
+        GK152_data = request.form['GK152_data']
+        HCSR04_state = request.form['HCSR04_state']
+        HCSR04_distance = request.form['HCSR04_distance']
+        LEDBuzzer_1 = request.form['LEDBuzzer_1']
+        LEDBuzzer_2 = request.form['LEDBuzzer_2']
+        Time = get_date_now()
+        Can_status = CanStatusDb()
+        res = Can_status.Can_status_add(Can_ID, GK152_state, GK152_data, HCSR04_state, HCSR04_distance, LEDBuzzer_1,
+                                        LEDBuzzer_2, Time)
+        return res
+
+
+@app.route('/Can_check/', methods=['POST'])
+def Can_status_check():
+    if request.method == 'POST':
+        Can_status = CanStatusDb()
+        Can_ID = request.form['Can_ID']
+        res = Can_status.Can_status_search(Can_ID)
+        return res
+
+@app.route('/find_id/', methods=['POST'])
 def FI():
     if request.method is 'POST':
         id = request.form['deviceID']
         res = {
-            'status':True,
-            'de..':1,
-            'runbbis':1
+            'status': True,
+            'de..': 1,
+            'runbbis': 1
         }
         return res
 
