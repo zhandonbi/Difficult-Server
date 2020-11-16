@@ -4,10 +4,6 @@ from db_operator.load_db import Load
 import datetime
 
 
-def get_date_now():
-    return str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
-
 class RecordsDb(object):
     """
     1可回收垃圾
@@ -37,7 +33,7 @@ class RecordsDb(object):
         """
         Can_ID = 'IMX6_ENV_RBELONG_001'
         sql = 'insert into Can_Records(Can_ID,Rubbish_Class,Time) values("{0}",{1},{2}) '.format(Can_ID, Rubbish_Class,
-                                                                                               Time)
+                                                                                                 Time)
         self.db_cur.execute(sql)
         self.db_operator.commit()
         return '成功向数据库中添加如下信息：{{Can_ID:{0},Rubbish_Class:{1},Time:{2}}}\n'.format(Can_ID, Rubbish_Class, Time)
@@ -51,7 +47,7 @@ class RecordsDb(object):
         :return: 返回当前数据中当前设备号的最新一条记录
         """
         result = {}
-        sql = 'SELECT * FROM Can_Records WHERE Can_ID = {}'.format(Can_ID)
+        sql = 'SELECT * FROM Can_Records WHERE Can_ID = "{}"'.format(Can_ID)
         self.db_cur.execute(sql)
         search_results = self.db_cur.fetchall()
         if len(search_results) != 0:
