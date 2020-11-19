@@ -55,8 +55,18 @@ class RecordsDb(object):
             result['ClassID'] = int(search_results[len(search_results) - 1][1])
             result['Time'] = search_results[len(search_results) - 1][2]
         else:
-            return {'Can_ID': Can_ID, 'ClassID': -1, 'Time': "NOT EXIST", }
-        return result
+            return '不存在该设备ID的垃圾桶或该垃圾桶尚未有工作记录'
+        rubbishclass = ""
+        if result['ClassID'] == '1':
+            ruubbishclass = "可回收垃圾"
+        elif result['ClassID'] == '2':
+            ruubbishclass = "其他垃圾"
+        elif result['ClassID'] == '3':
+            ruubbishclass = "有害垃圾"
+        elif result['ClassID'] == '4':
+            ruubbishclass = "厨余垃圾"
+        res = Can_ID + "号设备的上一次工作结果为:" + rubbishclass + ",上次工作时间为:" + result['Time']
+        return res
 
     def cal_same_rubbish_class(self, Rubbish_Class: int):
         """
@@ -66,7 +76,7 @@ class RecordsDb(object):
         sql = 'SELECT * FROM Can_Records WHERE Rubbish_Class = {}'.format(Rubbish_Class)
         self.db_cur.execute(sql)
         search_results = self.db_cur.fetchall()
-        result = len(search_results)
+        result = str(len(search_results))
         return result
 
     def cal_all_records(self):
@@ -74,12 +84,12 @@ class RecordsDb(object):
 
         :return: 数据库中所有同类的信息
         """
-        result = {}
-        result['Type = 1'] = self.cal_same_rubbish_class(1)
-        result['Type = 2'] = self.cal_same_rubbish_class(2)
-        result['Type = 3'] = self.cal_same_rubbish_class(3)
-        result['Type = 4'] = self.cal_same_rubbish_class(4)
-        return result
+        class1 = self.cal_same_rubbish_class(1)
+        class2 = self.cal_same_rubbish_class(2)
+        class3 = self.cal_same_rubbish_class(3)
+        class4 = self.cal_same_rubbish_class(4)
+        res = "当前数据库中:\n可回收垃圾的记录的数目为:" + class1 + " 条\n其它垃圾的记录的数目为:" + class2 + " 条\n有害垃圾的记录的数目为:" + class3 + " 条\n厨余垃圾的记录的数目为:" + class4 + " 条"
+        return res
 
     def close(self):
         self.db_load.close()
