@@ -65,7 +65,7 @@ class RecordsDb(object):
             rubbishclass = "有害垃圾"
         elif result['ClassID'] == 4:
             rubbishclass = "厨余垃圾"
-        res = Can_ID + "号设备的上一次工作结果为:" + rubbishclass + "\n上次工作时间为:" + result['Time']
+        res = Can_ID + "号设备\n：\t上一次工作结果为:" + rubbishclass + "\n\t上次工作时间为:" + result['Time']
         return res
 
     def cal_same_rubbish_class(self, Rubbish_Class: int):

@@ -76,7 +76,7 @@ class CanStatusDb(object):
 
             for key in result.keys():
                 if result[key] == "error":
-                    res = Can_ID + "号垃圾桶出现故障，请联系管理员进行维修;\n"
+                    res = Can_ID + "号垃圾桶出现故障\n请联系管理员进行维修;\n"
 
             res = res + "上次检查时间：" + result['Time']
         else:
