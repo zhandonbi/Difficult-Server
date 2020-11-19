@@ -1,7 +1,8 @@
 # coding=UTF-8
 import datetime
+import os
 
-from flask import Flask, request, send_from_directory
+from flask import Flask, request, send_from_directory, make_response, send_file, send_from_directory
 from db_operator.item_db import ItemDb
 from PIL import Image
 from ASR.ASR import ASR
@@ -42,6 +43,16 @@ def get_classID():
         '3': '有害垃圾',
         '4': '厨余垃圾'
     }
+
+
+@app.route("/download_apk", methods=['GET'])
+def download_apk():
+    directory = os.getcwd()
+    filename = "download_resources/release-1.0.apk"
+    response = make_response(
+        send_from_directory(directory, filename.encode('utf-8').decode('utf-8'), as_attachment=True))
+    response.headers["Content-Disposition"] = "attachment; filename={}".format(filename.encode().decode('latin-1'))
+    return response
 
 
 @app.route('/records_post/', methods=['POST', 'GET'])
