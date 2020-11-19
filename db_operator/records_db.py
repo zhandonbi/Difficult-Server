@@ -52,7 +52,7 @@ class RecordsDb(object):
         search_results = self.db_cur.fetchall()
         if len(search_results) != 0:
             result['Can_ID'] = search_results[len(search_results) - 1][0]
-            result['ClassID'] = int(search_results[len(search_results) - 1][1])
+            result['ClassID'] = str(search_results[len(search_results) - 1][1])
             result['Time'] = search_results[len(search_results) - 1][2]
         else:
             return '不存在该设备ID的垃圾桶或该垃圾桶尚未有工作记录'
