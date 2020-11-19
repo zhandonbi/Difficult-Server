@@ -52,20 +52,20 @@ class RecordsDb(object):
         search_results = self.db_cur.fetchall()
         if len(search_results) != 0:
             result['Can_ID'] = search_results[len(search_results) - 1][0]
-            result['ClassID'] = str(search_results[len(search_results) - 1][1])
+            result['ClassID'] = int(search_results[len(search_results) - 1][1])
             result['Time'] = search_results[len(search_results) - 1][2]
         else:
             return '不存在该设备ID的垃圾桶或该垃圾桶尚未有工作记录'
         rubbishclass = ""
-        if result['ClassID'] == '1':
-            ruubbishclass = "可回收垃圾"
-        elif result['ClassID'] == '2':
-            ruubbishclass = "其他垃圾"
-        elif result['ClassID'] == '3':
-            ruubbishclass = "有害垃圾"
-        elif result['ClassID'] == '4':
-            ruubbishclass = "厨余垃圾"
-        res = Can_ID + "号设备的上一次工作结果为:" + rubbishclass + ",上次工作时间为:" + result['Time']
+        if result['ClassID'] == 1:
+            rubbishclass = "可回收垃圾"
+        elif result['ClassID'] == 2:
+            rubbishclass = "其他垃圾"
+        elif result['ClassID'] == 3:
+            rubbishclass = "有害垃圾"
+        elif result['ClassID'] == 4:
+            rubbishclass = "厨余垃圾"
+        res = Can_ID + "号设备的上一次工作结果为:" + rubbishclass + "\n上次工作时间为:" + result['Time']
         return res
 
     def cal_same_rubbish_class(self, Rubbish_Class: int):
