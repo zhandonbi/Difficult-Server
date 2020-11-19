@@ -92,10 +92,13 @@ def Can_status_post():
         HCSR04_distance = request.form['HCSR04_distance']
         LEDBuzzer_1 = request.form['LEDBuzzer_1']
         LEDBuzzer_2 = request.form['LEDBuzzer_2']
+        LEDBuzzer_3 = request.form['LEDBuzzer_3']
+        LEDBuzzer_4 = request.form['LEDBuzzer_4']
+        LEDBuzzer_5 = request.form['LEDBuzzer_5']
         Time = get_date_now()
         Can_status = CanStatusDb()
         res = Can_status.Can_status_add(Can_ID, GK152_state, GK152_data, HCSR04_state, HCSR04_distance, LEDBuzzer_1,
-                                        LEDBuzzer_2, Time)
+                                        LEDBuzzer_2, LEDBuzzer_3, LEDBuzzer_4, LEDBuzzer_5, Time)
         return res
 
 
@@ -106,6 +109,7 @@ def Can_status_check():
         Can_ID = request.form['Can_ID']
         res = Can_status.Can_status_search(Can_ID)
         return res
+
 
 @app.route('/find_id/', methods=['POST'])
 def FI():
