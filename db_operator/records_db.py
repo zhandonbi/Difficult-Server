@@ -32,7 +32,7 @@ class RecordsDb(object):
         :return: 添加条目的信息
         """
         Can_ID = 'IMX6_ENV_RBELONG_001'
-        sql = 'insert into Can_Records(Can_ID,Rubbish_Class,Time) values("{0}",{1},{2}) '.format(Can_ID, Rubbish_Class,
+        sql = 'insert into Can_Records(Can_ID,Rubbish_Class,Time) values("{0}",{1},"{2}") '.format(Can_ID, Rubbish_Class,
                                                                                                  Time)
         self.db_cur.execute(sql)
         self.db_operator.commit()
