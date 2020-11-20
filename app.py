@@ -20,7 +20,7 @@ app.config['JSON_AS_ASCII'] = False
 
 
 def get_date_now():
-    return str(datetime.datetime.now().strftime("%Y%m%d%H%M%S"))
+    return str(datetime.datetime.now().strftime("%Y.%m.%d %H:%M:%S"))
 
 
 # air = AIR()
