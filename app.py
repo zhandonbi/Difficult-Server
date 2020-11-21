@@ -73,7 +73,8 @@ def records_post():
         records = RecordsDb()
         Time = get_date_now()
         Can_ID = '1313d'
-        Rubbish_Class = int(temp_res['ClassID'])
+        res_id = str(len(temp_res)-1)
+        Rubbish_Class = int(temp_res[res_id]['ClassID'])
         res = records.records_add(Can_ID, Rubbish_Class, Time)
         return res
 
